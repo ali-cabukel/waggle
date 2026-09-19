@@ -1,3 +1,11 @@
+# Base stack (default): Mongo, Redis, Obscura.
+#
+#   docker compose up -d
+#
+# Backend + frontend on top of this file:
+#
+#   docker compose -f docker-compose.app.yml up --build
+
 services:
   mongodb:
     image: mongo:7.0

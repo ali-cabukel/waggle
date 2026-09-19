@@ -243,11 +243,26 @@ Set `schedule` to a 5-field cron, e.g. `0 */6 * * *`. APScheduler reloads enable
 
 ## Docker
 
+Default compose file is the DB stack only (Mongo, Redis, Obscura). Backend and frontend stay on the host for local `make backend` / `make frontend`.
+
 ```bash
 docker compose up -d mongodb obscura redis
 docker compose ps
 curl -s http://127.0.0.1:9222/json/version   # Obscura CDP
 ```
+
+Full stack (DBs + API + UI):
+
+```bash
+docker compose -f docker-compose.app.yml up --build
+# or: make app-up
+```
+
+- UI: http://localhost:3000
+- API: http://localhost:8000
+- Health: `GET /health`
+
+`docker-compose.app.yml` includes the base file, so Mongo / Redis / Obscura start with the apps. The backend container talks to those services on the compose network (`mongodb:27017`, `redis:6379`, `obscura:9222`). Browser calls still use `http://localhost:8000`.
 
 `obscura` publishes **127.0.0.1:9222** only (not the LAN). Image: `h4ckf0r0day/obscura:latest`. Redis is for the optional Celery worker.
 
@@ -255,7 +270,8 @@ curl -s http://127.0.0.1:9222/json/version   # Obscura CDP
 
 ```
 waggle/
-  docker-compose.yml      # Mongo 7 + Obscura CDP + Redis
+  docker-compose.yml      # Mongo 7 + Obscura CDP + Redis (default)
+  docker-compose.app.yml  # backend + frontend (includes the DB file)
   Makefile
   backend/
     waggle/
@@ -275,7 +291,9 @@ waggle/
 | Target | Action |
 | --- | --- |
 | `make db-up` | Mongo + Obscura + Redis |
-| `make db-down` | Stop compose |
+| `make db-down` | Stop the default (DB) compose |
+| `make app-up` | Build and run DBs + backend + frontend |
+| `make app-down` | Stop the full app compose |
 | `make backend` | uv sync + uvicorn :8000 |
 | `make worker` | Celery worker (`JOB_BACKEND=celery`) |
 | `make frontend` | npm install + next dev |
