@@ -69,6 +69,7 @@ async def plan_node(state: AgenticState) -> AgenticState:
     llm = ChatOpenAI(
         model=settings.openai_model,
         api_key=settings.openai_api_key,
+        base_url=settings.openai_base_url,
         temperature=0.1,
     )
     snippet = (state.get("html_snapshot") or "")[:4000]
@@ -141,6 +142,7 @@ async def repair_node(state: AgenticState) -> AgenticState:
     llm = ChatOpenAI(
         model=settings.openai_model,
         api_key=settings.openai_api_key,
+        base_url=settings.openai_base_url,
         temperature=0.2,
     )
     prompt = (
