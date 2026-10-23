@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     mongodb_url: str = Field(default="mongodb://localhost:27017")
     mongodb_database: str = Field(default="waggle")
     openai_api_key: str = Field(default="")
+    openai_base_url: str = Field(default="https://api.openai.com/v1")
     openai_model: str = Field(default="gpt-4o-mini")
     allowed_origins: list[str] = Field(
         default=["http://localhost:3000", "http://localhost:3001"]
